@@ -21,6 +21,8 @@ Dialog::Dialog(QWidget *parent) :
     ui->lineEditHost->setText(host);
 
     ui->verticalSlider->setMaximum(55000);
+    ui->verticalSlider->setSingleStep(55000/5);
+    ui->verticalSlider->setPageStep(55000/5);
 
     connect(&tcpSock, SIGNAL(connected()), this, SLOT(handleSocketConnected()));
     connect(&tcpSock, SIGNAL(hostFound()), this, SLOT(handleSocketHostFound()));
@@ -28,6 +30,10 @@ Dialog::Dialog(QWidget *parent) :
             this, SLOT(handleSocketStateChanged(QAbstractSocket::SocketState)));
     connect(&tcpSock, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(handleSocketError(QAbstractSocket::SocketError)));
+    connect(&tcpSock,SIGNAL(bytesWritten(qint64)), this, SLOT(handleBytesWritten(qint64)));
+    connect(&tcpSock, SIGNAL(readyRead()), this, SLOT(handleReadyRead()));
+
+
 
     connect(&hbTimer, SIGNAL(timeout()), this, SLOT(handleSendHB()));
     connect(&sendTimer, SIGNAL(timeout()), this, SLOT(handleSendTimer()));
@@ -86,11 +92,20 @@ void Dialog::handleSocketStateChanged(QAbstractSocket::SocketState ss)
 
 void Dialog::on_verticalSlider_sliderMoved(int position)
 {
-    //qDebug() << position;
-    if(pos == -1){
-        pos = position;
-        sendCnt = 2;
+    quint64 curTime = QTime::currentTime().msecsSinceStartOfDay();
+    if((tcpSock.state() == QAbstractSocket::ConnectedState) && ((curTime - lastSendTime) > 1000)){
+        lastSendTime = curTime;
+        QByteArray ba;
+        createMsg(ba, 0xd314);
+        tcpSock.write(ba);
+        tcpSock.flush();
     }
+
+//    //qDebug() << position;
+//    if(pos == -1){
+//        pos = position;
+//        sendCnt = 2;
+//    }
 
 }
 
@@ -115,6 +130,12 @@ void Dialog::on_lineEditHost_editingFinished()
     qDebug() << host;
     settings.setValue("host", host);
     //settings.
+}
+
+void Dialog::handleReadyRead()
+{
+    qDebug()<<"handleReadyRead";
+
 }
 
 void Dialog::handleSendTimer()
@@ -165,6 +186,10 @@ void Dialog::handleSendTimer()
         }
         qDebug() << ba.toHex();
     }
+}
+void Dialog::handleBytesWritten(qint64 bytes)
+{
+    qDebug() << bytes;
 }
 
 void Dialog::createMsg(QByteArray &ba, int d)
@@ -253,3 +278,5 @@ void Dialog::on_pushButton_6_clicked()
     }
 
 }
+
+

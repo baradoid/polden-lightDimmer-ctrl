@@ -28,6 +28,8 @@ private slots:
     void handleSendHB();
     void handleSendTimer();
 
+    void handleBytesWritten(qint64);
+    void handleReadyRead();
     void on_verticalSlider_sliderMoved(int position);
 
     void on_lineEditHost_editingFinished();
@@ -52,6 +54,7 @@ private:
     int pos, sendCnt;
 
     void createMsg(QByteArray &ba, int d);
+    quint64 lastSendTime;
 
 };
 
