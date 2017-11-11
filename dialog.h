@@ -46,6 +46,26 @@ private slots:
 
     void on_pushButton_6_clicked();
 
+    void on_pushButtonPonOff1_clicked();
+
+    void on_pushButtonPonOn1_clicked();
+
+    void on_pushButtonPonOnAll_clicked();
+
+    void on_pushButtonPonOffAll_clicked();
+
+    void on_pushButtonOn2_clicked();
+
+    void on_pushButtonOff2_clicked();
+
+    void on_pushButtonOn3_clicked();
+
+    void on_pushButtonOff3_clicked();
+
+    void on_pushButtonOn4_clicked();
+
+    void on_pushButtonOff4_clicked();
+
 private:
     Ui::Dialog *ui;
     QTcpSocket tcpSock;

@@ -189,7 +189,7 @@ void Dialog::handleSendTimer()
 }
 void Dialog::handleBytesWritten(qint64 bytes)
 {
-    qDebug() << bytes;
+    //qDebug() << bytes;
 }
 
 void Dialog::createMsg(QByteArray &ba, int d)
@@ -280,3 +280,228 @@ void Dialog::on_pushButton_6_clicked()
 }
 
 
+
+
+void Dialog::on_pushButtonPonOnAll_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x40);
+        ba.append((char)0x02);
+        ba.append((char)0x12);
+        ba.append((char)0xab);
+        ba.append((char)0x00);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonPonOffAll_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x40);
+        ba.append((char)0x02);
+        ba.append((char)0x12);
+        ba.append((char)0xa9);
+        ba.append((char)0xfe);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonPonOff1_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x08);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+
+        //ba.append((char)0xeb);
+        //ba.append((char)0x2c);
+
+        //ba.append((char)0x0b);
+        //ba.append((char)0x4c);
+
+        ba.append((char)0x9b);
+        ba.append((char)0xb0);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonPonOn1_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x08);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+
+        //ba.append((char)0xeb);
+        //ba.append((char)0x2c);
+
+        //ba.append((char)0x0b);
+        //ba.append((char)0x4c);
+
+        ba.append((char)0x9c);
+        ba.append((char)0xb1);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonOn2_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x02);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+        ba.append((char)0x96);
+        ba.append((char)0xa5);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonOff2_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x02);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+        ba.append((char)0x95);
+        ba.append((char)0xa4);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonOn3_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x01);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+        ba.append((char)0x93);
+        ba.append((char)0xa1);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonOff3_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x01);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+        ba.append((char)0x92);
+        ba.append((char)0xa0);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonOn4_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x80);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+        ba.append((char)0xa8);
+        ba.append((char)0x35);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
+
+void Dialog::on_pushButtonOff4_clicked()
+{
+    if((tcpSock.state() == QAbstractSocket::ConnectedState)){
+        QByteArray ba;
+        ba.append((char)0x55);
+        ba.append((char)0x31);
+        ba.append((char)0x34);
+        ba.append((char)0x38);
+        ba.append((char)0x01);
+        ba.append((char)0x80);
+        ba.append((char)0x02);
+        ba.append((char)0x0a);
+        ba.append((char)0xa7);
+        ba.append((char)0x34);
+        ba.append((char)0xaa);
+        ba.append((char)0xaa);
+        tcpSock.write(ba);
+        tcpSock.flush();
+    }
+}
