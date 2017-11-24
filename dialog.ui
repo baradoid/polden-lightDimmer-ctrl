@@ -283,6 +283,19 @@
     <string>Off4</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButtonSeek">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>50</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>seek</string>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

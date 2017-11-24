@@ -49,6 +49,7 @@ Dialog::Dialog(QWidget *parent) :
 
 Dialog::~Dialog()
 {
+    tcpSock.disconnect();
     delete ui;
 }
 
@@ -504,4 +505,10 @@ void Dialog::on_pushButtonOff4_clicked()
         tcpSock.write(ba);
         tcpSock.flush();
     }
+}
+
+void Dialog::on_pushButtonSeek_clicked()
+{
+    //seekHcCtrl.setInterval(10);
+
 }

@@ -66,6 +66,8 @@ private slots:
 
     void on_pushButtonOff4_clicked();
 
+    void on_pushButtonSeek_clicked();
+
 private:
     Ui::Dialog *ui;
     QTcpSocket tcpSock;
@@ -75,6 +77,7 @@ private:
 
     void createMsg(QByteArray &ba, int d);
     quint64 lastSendTime;
+    QTimer seekHcCtrl;
 
 };
 
