@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 #include <QSettings>
+#include <QUdpSocket>
 
 namespace Ui {
 class Dialog;
@@ -68,6 +69,8 @@ private slots:
 
     void on_pushButtonSeek_clicked();
 
+    void handleUpdPendingDatagrams();
+
 private:
     Ui::Dialog *ui;
     QTcpSocket tcpSock;
@@ -78,6 +81,12 @@ private:
     void createMsg(QByteArray &ba, int d);
     quint64 lastSendTime;
     QTimer seekHcCtrl;
+
+    QUdpSocket *udpSocket;
+    QPalette *paletteGrey, *paletteRed, *paletteGreen;
+
+
+    void postMessage(QString str);
 
 };
 

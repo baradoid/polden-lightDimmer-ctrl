@@ -3,6 +3,7 @@
 #include <QHostAddress>
 #include <QMetaEnum>
 #include <QTime>
+#include <QNetworkDatagram>
 
 
 Dialog::Dialog(QWidget *parent) :
@@ -12,7 +13,10 @@ Dialog::Dialog(QWidget *parent) :
     hbTimer(this),
     settings("Murinets", "alrightDimmer"),
     pos(-1),
-    sendCnt(0)
+    sendCnt(0),
+    paletteGrey(NULL),
+    paletteRed(NULL),
+    paletteGreen(NULL)
 {
     ui->setupUi(this);
 
@@ -20,9 +24,9 @@ Dialog::Dialog(QWidget *parent) :
     QString host = settings.value("host").toString();
     ui->lineEditHost->setText(host);
 
-    ui->verticalSlider->setMaximum(55000);
-    ui->verticalSlider->setSingleStep(55000/5);
-    ui->verticalSlider->setPageStep(55000/5);
+//    ui->verticalSlider->setMaximum(55000);
+//    ui->verticalSlider->setSingleStep(55000/5);
+//    ui->verticalSlider->setPageStep(55000/5);
 
     connect(&tcpSock, SIGNAL(connected()), this, SLOT(handleSocketConnected()));
     connect(&tcpSock, SIGNAL(hostFound()), this, SLOT(handleSocketHostFound()));
@@ -44,6 +48,47 @@ Dialog::Dialog(QWidget *parent) :
 
     hbTimer.setInterval(30000);
     hbTimer.setSingleShot(true);
+
+    int udpPort = 8155; //ui->lineEditUDPport->text().toInt();
+    udpSocket = new QUdpSocket(this);
+//        connect(udpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+//                this, SLOT(stateChanged(QAbstractSocket::SocketState)));
+
+
+    if(paletteGrey == NULL){
+        paletteGrey = new QPalette();
+        paletteGrey->setColor(QPalette::Base,Qt::lightGray);
+    }
+    if(paletteRed == NULL){
+        paletteRed = new QPalette();
+        paletteRed->setColor(QPalette::Base,Qt::red);
+    }
+    if(paletteGreen == NULL){
+        paletteGreen = new QPalette();
+        paletteGreen->setColor(QPalette::Base,Qt::green);
+    }
+
+    ui->lineEditConnectionState->setText("unconnected");
+    ui->lineEditConnectionState->setPalette(*paletteRed);
+
+
+    QString msg;
+
+    if(udpSocket->bind(QHostAddress::Any, udpPort) == true){
+        //qDebug("UDP bind OK");
+        msg.sprintf("UDP on %d bind OK", udpPort);
+
+    }
+    else{
+        msg.sprintf("UDP on %d bind FAIL", udpPort);
+    }
+    //ui->plainTextEditStatus->appendPlainText(msg);
+    postMessage(msg);
+    connect(udpSocket, SIGNAL(readyRead()),
+            this, SLOT(handleUpdPendingDatagrams()));
+
+    on_pushButtonConnect_clicked();
+
 
 }
 
@@ -87,8 +132,26 @@ void Dialog::handleSocketStateChanged(QAbstractSocket::SocketState ss)
 //    ui->lineEditStatus->setText(metaEnum.valueToKey(ss));
 //    if(ss == QAbstractSocket::ConnectedState){
 //    }
-    QString t = QTime::currentTime().toString("hh:mm:ss.zzz");
-    ui->plainTextEditStatus->appendPlainText(t + "> "+ metaEnum.valueToKey(ss));
+//    QString t = QTime::currentTime().toString("hh:mm:ss.zzz");
+//    ui->plainTextEditStatus->appendPlainText(t + "> "+ metaEnum.valueToKey(ss));
+
+    QString msg;
+    msg = QString("socket state:") + metaEnum.valueToKey(ss);
+    postMessage(msg);
+
+
+    if(ss == QTcpSocket::UnconnectedState){
+        on_pushButtonConnect_clicked();
+    }
+    else if(ss == QTcpSocket::ConnectedState){
+        ui->lineEditConnectionState->setText("connected");
+        ui->lineEditConnectionState->setPalette(*paletteGreen);
+    }
+    else{
+        ui->lineEditConnectionState->setText("unconnected");
+        ui->lineEditConnectionState->setPalette(*paletteRed);
+
+    }
 }
 
 void Dialog::on_verticalSlider_sliderMoved(int position)
@@ -113,13 +176,12 @@ void Dialog::on_verticalSlider_sliderMoved(int position)
 void Dialog::handleSendHB()
 {
     if(tcpSock.state() == QAbstractSocket::ConnectedState){
-        qDebug() << "hb";
+        //qDebug() << "hb";
         QByteArray ba;
         ba.append((char)0xff);
         tcpSock.write(ba);
 
-        QString t = QTime::currentTime().toString("hh:mm:ss.zzz");
-        ui->plainTextEditStatus->appendPlainText(t + "> hb");
+        postMessage("> hb");
 
         hbTimer.start();
     }
@@ -301,6 +363,31 @@ void Dialog::on_pushButtonPonOnAll_clicked()
         ba.append((char)0xaa);
         tcpSock.write(ba);
         tcpSock.flush();
+
+        tcpSock.write(ba);
+        tcpSock.write(ba);
+        tcpSock.write(ba);
+        tcpSock.flush();
+
+//        ba.append((char)0x55);
+//        ba.append((char)0x56);
+//        ba.append((char)0x2f);
+//        ba.append((char)0x16);
+//        ba.append((char)0x01);
+//        ba.append((char)0x00);
+//        ba.append((char)0x02);
+//        ba.append((char)0x12);
+//        ba.append((char)0xab);
+//        ba.append((char)0xc0);
+//        ba.append((char)0xaa);
+//        ba.append((char)0xaa);
+//        tcpSock.write(ba);
+//        tcpSock.flush();
+//        tcpSock.write(ba);
+//        tcpSock.write(ba);
+//        tcpSock.write(ba);
+//        tcpSock.flush();
+
     }
 }
 
@@ -322,6 +409,30 @@ void Dialog::on_pushButtonPonOffAll_clicked()
         ba.append((char)0xaa);
         tcpSock.write(ba);
         tcpSock.flush();
+        tcpSock.write(ba);
+        tcpSock.write(ba);
+        tcpSock.write(ba);
+        tcpSock.flush();
+
+
+//        ba.append((char)0x55);
+//        ba.append((char)0x56);
+//        ba.append((char)0x2f);
+//        ba.append((char)0x16);
+//        ba.append((char)0x01);
+//        ba.append((char)0x00);
+//        ba.append((char)0x02);
+//        ba.append((char)0x12);
+//        ba.append((char)0xa9);
+//        ba.append((char)0xbe);
+//        ba.append((char)0xaa);
+//        ba.append((char)0xaa);
+//        tcpSock.write(ba);
+//        tcpSock.flush();
+//        tcpSock.write(ba);
+//        tcpSock.write(ba);
+//        tcpSock.write(ba);
+//        tcpSock.flush();
     }
 }
 
@@ -511,4 +622,29 @@ void Dialog::on_pushButtonSeek_clicked()
 {
     //seekHcCtrl.setInterval(10);
 
+}
+
+
+void Dialog::handleUpdPendingDatagrams()
+{
+    while (udpSocket->hasPendingDatagrams()) {
+        QNetworkDatagram datagram = udpSocket->receiveDatagram();
+        //qDebug() << datagram.data();
+        QString msg(datagram.data());
+        if(msg == "on"){
+            postMessage("recvd \"on\"");
+            on_pushButtonPonOnAll_clicked();
+        }
+        else if(msg == "off"){
+            postMessage("recvd \"off\"");
+            on_pushButtonPonOffAll_clicked();
+        }
+    }
+}
+
+
+void Dialog::postMessage(QString str)
+{
+    QString showStr = QString("%1> %2").arg(QTime::currentTime().toString("hh:mm:ss:zzz")).arg(str);
+    ui->plainTextEditStatus->appendPlainText(showStr);
 }
