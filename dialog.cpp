@@ -71,6 +71,8 @@ Dialog::Dialog(QWidget *parent) :
     ui->lineEditConnectionState->setText("unconnected");
     ui->lineEditConnectionState->setPalette(*paletteRed);
 
+    connect(udpSocket, SIGNAL(readyRead()),
+            this, SLOT(handleUpdPendingDatagrams()));
 
     QString msg;
 
@@ -84,8 +86,7 @@ Dialog::Dialog(QWidget *parent) :
     }
     //ui->plainTextEditStatus->appendPlainText(msg);
     postMessage(msg);
-    connect(udpSocket, SIGNAL(readyRead()),
-            this, SLOT(handleUpdPendingDatagrams()));
+
 
     on_pushButtonConnect_clicked();
 
@@ -181,7 +182,7 @@ void Dialog::handleSendHB()
         ba.append((char)0xff);
         tcpSock.write(ba);
 
-        postMessage("> hb");
+        //postMessage("> hb");
 
         hbTimer.start();
     }
